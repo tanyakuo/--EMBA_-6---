@@ -224,8 +224,14 @@ function initEventListeners() {
     monthContainer.classList.add("hidden");
     weekContainer.classList.remove("hidden");
     
-    // Set weekStart to the Monday of the week containing calendarDate
-    alignWeekStartDateToCalendarDate();
+    // If the viewed month is the same as the simulated "today" date, default to today's week.
+    // Otherwise, align to the first week of the navigated month.
+    if (state.calendarDate.getFullYear() === state.currentDate.getFullYear() &&
+        state.calendarDate.getMonth() === state.currentDate.getMonth()) {
+      alignWeekStartDateToCurrentDate();
+    } else {
+      alignWeekStartDateToCalendarDate();
+    }
     renderCalendar();
   });
 
