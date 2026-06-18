@@ -98,9 +98,9 @@ const COMMON_LOCATION = "國際大樓九樓 IB9 個案教室";
 let state = {
   selectedCourses: ["accounting", "statistics", "economics"], // default
   currentView: "month", // "month" or "week"
-  currentDate: new Date("2026-06-18T12:00:00"), // Today's initial simulated date
-  calendarDate: new Date("2026-06-01T00:00:00"), // Month view navigation date (June 2026 default)
-  weekStartDate: new Date("2026-06-15T00:00:00"), // Week view navigation date (June 15, 2026 default)
+  currentDate: new Date(2026, 5, 18, 12, 0, 0), // Today's initial simulated date (June 18, 2026)
+  calendarDate: new Date(2026, 5, 1, 0, 0, 0), // Month view navigation date (June 2026 default)
+  weekStartDate: new Date(2026, 5, 15, 0, 0, 0), // Week view navigation date (June 15, 2026 default)
   isSimulated: false
 };
 
