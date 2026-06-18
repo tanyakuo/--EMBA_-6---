@@ -234,34 +234,39 @@ body {
 .dashboard-grid {
   display: grid;
   grid-template-columns: 360px 1fr;
-  grid-template-areas:
-    "filter calendar"
-    "progress calendar"
-    "actions calendar"
-    "contacts guide";
   gap: 24px;
   align-items: start;
 }
 
-.filter-card { grid-area: filter; }
-.progress-card { grid-area: progress; }
-.action-buttons-container { grid-area: actions; }
-.calendar-card-container { grid-area: calendar; }
-.contacts-card { grid-area: contacts; }
-.guide-card { grid-area: guide; }
+.sidebar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.main-content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
 @media (max-width: 1024px) {
+  .sidebar-section, .main-content-section {
+    display: contents;
+  }
+  
   .dashboard-grid {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "filter"
-      "actions"
-      "progress"
-      "calendar"
-      "contacts"
-      "guide";
+    display: flex;
+    flex-direction: column;
     gap: 16px;
   }
+  
+  .filter-card { order: 1; }
+  .action-buttons-container { order: 2; }
+  .progress-card { order: 3; }
+  .calendar-card-container { order: 4; }
+  .contacts-card { order: 5; }
+  .guide-card { order: 6; }
 }
 
 /* Universal Dashboard Card Style */
