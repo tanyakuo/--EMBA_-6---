@@ -531,7 +531,8 @@ function createMonthDayCell(date, isCurrentMonth, activeSessions) {
         pill.classList.add("completed");
       }
       
-      pill.innerText = `${sess.courseName} (${sess.start})`;
+      const shortName = sess.courseName.substring(0, 2);
+      pill.innerHTML = `<span class="pill-name">${shortName}</span><span class="pill-time"> ${sess.start}</span>`;
       pill.title = `${sess.courseName} - ${sess.professor}\n時間: ${sess.start}-${sess.end}\n地點: ${COMMON_LOCATION}`;
       
       // Click event
