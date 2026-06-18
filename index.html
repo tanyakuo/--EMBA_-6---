@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>台科大 EMBA 115暑期課程行事曆 (富6)</title>
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons for modern UI -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-main">
+        <div class="logo-area">
+          <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <div class="logo-text">
+            <h1>台科大 EMBA</h1>
+            <span class="sub-logo">115學年度 暑期課表 (富6)</span>
+          </div>
+        </div>
+        
+        <div class="header-actions">
+          <!-- Simulation Status Indicator -->
+          <div class="sim-indicator" id="simIndicator">
+            <span class="pulse-dot"></span>
+            <span class="sim-text" id="currentDateText">系統時間: 2026/06/18</span>
+            <button class="btn-icon-small" id="btnOpenSim" title="設定模擬時間"><i class="fa-solid fa-clock-rotate-left"></i></button>
+          </div>
+          
+          <!-- Theme Toggle -->
+          <button class="theme-toggle" id="themeToggle" title="切換深淺色主題">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dashboard Grid -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Sidebar: Controls & Stats -->
+      <section class="sidebar-section">
+        
+        <!-- Course Filters Card -->
+        <div class="dashboard-card filter-card">
+          <h3><i class="fa-solid fa-filter"></i> 選擇修讀課程</h3>
+          <p class="card-desc">勾選您有修讀的科目，行事曆與匯出檔案會即時動態更新。</p>
+          
+          <div class="course-selectors">
+            <label class="course-checkbox-label accounting" for="chkAccounting">
+              <input type="checkbox" id="chkAccounting" checked>
+              <span class="custom-checkbox"></span>
+              <div class="course-label-content">
+                <span class="course-name">會計學</span>
+                <span class="course-details-short">郭啟賢 教授 • 2 學分</span>
+              </div>
+            </label>
+            
+            <label class="course-checkbox-label statistics" for="chkStatistics">
+              <input type="checkbox" id="chkStatistics" checked>
+              <span class="custom-checkbox"></span>
+              <div class="course-label-content">
+                <span class="course-name">統計學</span>
+                <span class="course-details-short">葉瑞徽 教授 • 2 學分</span>
+              </div>
+            </label>
+            
+            <label class="course-checkbox-label economics" for="chkEconomics">
+              <input type="checkbox" id="chkEconomics" checked>
+              <span class="custom-checkbox"></span>
+              <div class="course-label-content">
+                <span class="course-name">經濟學</span>
+                <span class="course-details-short">洪東敏 教授 • 2 學分</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Progress Card -->
+        <div class="dashboard-card progress-card">
+          <h3><i class="fa-solid fa-chart-line"></i> 課堂進度統計</h3>
+          <div class="stats-container">
+            <div class="stat-box">
+              <span class="stat-value" id="statCredits">6</span>
+              <span class="stat-label">修讀學分</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-value" id="statCompleted">0</span>
+              <span class="stat-label">已上堂數</span>
+            </div>
+            <div class="stat-boxHighlight">
+              <span class="stat-value" id="statRemaining">36</span>
+              <span class="stat-label">剩餘堂數</span>
+            </div>
+          </div>
+          
+          <div class="progress-bar-container">
+            <div class="progress-bar-label">
+              <span>學習進度</span>
+              <span id="progressPercent">0%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="progressBarFill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export/Share Actions -->
+        <div class="action-buttons-container">
+          <button class="btn btn-primary" id="btnExportICS">
+            <i class="fa-solid fa-calendar-arrow-down"></i> 匯出所選課表 (.ics)
+          </button>
+          <button class="btn btn-secondary" id="btnShareLink">
+            <i class="fa-solid fa-share-nodes"></i> 複製分享連結 (LINE適用)
+          </button>
+        </div>
+
+        <!-- Teacher/TA Info Card -->
+        <div class="dashboard-card contacts-card">
+          <h3><i class="fa-solid fa-address-book"></i> 課程與助教資訊</h3>
+          <div class="contact-accordion">
+            <!-- Accounting TA -->
+            <div class="contact-item accounting">
+              <div class="contact-header">
+                <span class="badge badge-acc">會計</span>
+                <strong>郭啟賢 教授</strong>
+                <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+              </div>
+              <div class="contact-body">
+                <p><strong>助教：</strong>簡紫婕 (M11408011)</p>
+                <div class="contact-actions">
+                  <a href="tel:0966708093" class="btn-contact"><i class="fa-solid fa-phone"></i> 0966-708093</a>
+                  <a href="mailto:dudududu5033@gmail.com" class="btn-contact"><i class="fa-solid fa-envelope"></i> Email</a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Statistics TA -->
+            <div class="contact-item statistics">
+              <div class="contact-header">
+                <span class="badge badge-stat">統計</span>
+                <strong>葉瑞徽 教授</strong>
+                <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+              </div>
+              <div class="contact-body">
+                <p><strong>助教：</strong>鄭佩真 (M11301018)</p>
+                <div class="contact-actions">
+                  <a href="tel:0968861539" class="btn-contact"><i class="fa-solid fa-phone"></i> 0968-861539</a>
+                  <a href="mailto:M11301018@mail.ntust.edu.tw" class="btn-contact"><i class="fa-solid fa-envelope"></i> Email</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Economics TA -->
+            <div class="contact-item economics">
+              <div class="contact-header">
+                <span class="badge badge-econ">經濟</span>
+                <strong>洪東敏 教授</strong>
+                <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+              </div>
+              <div class="contact-body">
+                <p><strong>助教：</strong>潘芊華 (B11108022)</p>
+                <div class="contact-actions">
+                  <a href="tel:0966201918" class="btn-contact"><i class="fa-solid fa-phone"></i> 0966-201918</a>
+                  <a href="mailto:108ecaeunice@gmail.com" class="btn-contact"><i class="fa-solid fa-envelope"></i> Email</a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Location Details -->
+            <div class="location-box">
+              <i class="fa-solid fa-location-dot"></i>
+              <div>
+                <strong>上課地點 (三科相同)</strong>
+                <p>國立臺灣科技大學 國際大樓九樓 IB9 個案教室</p>
+                <a href="https://maps.google.com/?q=國立臺灣科技大學國際大樓" target="_blank" class="maps-link">在 Google 地圖中查看 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Calendar View & Instructions -->
+      <section class="main-content-section">
+        
+        <!-- Calendar Card -->
+        <div class="dashboard-card calendar-card-container">
+          <div class="calendar-header-toolbar">
+            <div class="view-switcher">
+              <button class="view-btn active" id="btnMonthView"><i class="fa-solid fa-calendar-days"></i> 月曆檢視</button>
+              <button class="view-btn" id="btnWeekView"><i class="fa-solid fa-calendar-week"></i> 週曆檢視</button>
+            </div>
+            
+            <div class="calendar-nav-controls">
+              <button class="nav-btn" id="btnPrev"><i class="fa-solid fa-chevron-left"></i></button>
+              <h2 class="calendar-title" id="calendarTitle">2026 年 6 月</h2>
+              <button class="nav-btn" id="btnNext"><i class="fa-solid fa-chevron-right"></i></button>
+              <button class="btn-text-small" id="btnToday">今天</button>
+            </div>
+          </div>
+
+          <!-- Calendar Rendering Area -->
+          <div class="calendar-view-body">
+            <!-- Month Grid -->
+            <div class="calendar-month-view" id="monthViewContainer">
+              <div class="month-grid-header">
+                <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div><div>日</div>
+              </div>
+              <div class="month-grid-days" id="monthGridDays">
+                <!-- Days will be dynamically injected here by JS -->
+              </div>
+            </div>
+
+            <!-- Week Grid -->
+            <div class="calendar-week-view hidden" id="weekViewContainer">
+              <div class="week-grid-container">
+                <div class="week-grid-header" id="weekGridHeader">
+                  <!-- Weekday headers generated by JS -->
+                </div>
+                <div class="week-grid-body" id="weekGridBody">
+                  <!-- Week events generated by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Import Guide Card (Tutorial) -->
+        <div class="dashboard-card guide-card">
+          <div class="guide-header">
+            <h3><i class="fa-solid fa-circle-info"></i> 行事曆匯入教學</h3>
+            <p class="guide-subtitle">點擊「匯出所選課表 (.ics)」後，請依照您的裝置選擇下方教學匯入：</p>
+          </div>
+          
+          <div class="guide-tabs">
+            <button class="guide-tab-btn active" data-tab="google"><i class="fa-brands fa-google"></i> Google 行事曆</button>
+            <button class="guide-tab-btn" data-tab="apple"><i class="fa-brands fa-apple"></i> iPhone / Apple 行事曆</button>
+            <button class="guide-tab-btn" data-tab="outlook"><i class="fa-regular fa-envelope"></i> Outlook</button>
+          </div>
+          
+          <div class="guide-tab-content">
+            <!-- Google Calendar Tab -->
+            <div class="tab-pane active" id="pane-google">
+              <div class="guide-steps">
+                <div class="step">
+                  <div class="step-num">1</div>
+                  <div class="step-desc">
+                    <h4>下載 ICS 設定檔</h4>
+                    <p>在本頁面勾選修讀課程後，點擊上方<strong>「匯出所選課表 (.ics)」</strong>，將檔案儲存到電腦或手機中。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">2</div>
+                  <div class="step-desc">
+                    <h4>開啟 Google 行事曆設定</h4>
+                    <p>在瀏覽器開啟 <a href="https://calendar.google.com" target="_blank">Google 日曆 <i class="fa-solid fa-arrow-up-right-from-square"></i></a>，點擊右上角「齒輪圖示」&gt;<strong>「設定」</strong>。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">3</div>
+                  <div class="step-desc">
+                    <h4>匯入行事曆</h4>
+                    <p>在左側選單中選擇<strong>「匯入及匯出」</strong>。點擊「選取電腦中的檔案」，選擇剛才下載的 `.ics` 檔案。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">4</div>
+                  <div class="step-desc">
+                    <h4>選擇日曆並完成</h4>
+                    <p>在「新增至日曆」下拉選單中選擇要匯入的行事曆（建議可新建一個「EMBA 暑期課程」日曆，方便日後管理），最後點擊<strong>「匯入」</strong>即可！</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Apple Calendar Tab -->
+            <div class="tab-pane" id="pane-apple">
+              <div class="guide-steps">
+                <div class="step">
+                  <div class="step-num">1</div>
+                  <div class="step-desc">
+                    <h4>使用 Safari/Chrome 開啟並下載</h4>
+                    <p>在 iPhone 點擊匯出按鈕下載檔案。若您是從 LINE 開啟此網頁，點擊分享按鈕時網址已自動包含 <code>openExternalBrowser=1</code>，會強制呼叫系統瀏覽器，避免 LINE 內部瀏覽器攔截下載。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">2</div>
+                  <div class="step-desc">
+                    <h4>開啟檔案並加入</h4>
+                    <p>下載完成後，點擊開啟該 <code>.ics</code> 檔案。系統會自動跳出「新增行事曆」的預覽視窗。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">3</div>
+                  <div class="step-desc">
+                    <h4>全部加入日曆</h4>
+                    <p>點擊右上角的<strong>「全部加入」</strong>，選擇要存入的日曆（例如：工作、家庭或自訂日曆），即可將所有課表一次匯入手機行事曆中。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="guide-tip">
+                <i class="fa-solid fa-lightbulb"></i>
+                <span><strong>Mac 用戶：</strong>雙擊下載的 <code>.ics</code> 檔案，Mac 內建的「行事曆 (Calendar)」應用程式會自動開啟並詢問您要加入到哪個日曆群組中。</span>
+              </div>
+            </div>
+            
+            <!-- Outlook Tab -->
+            <div class="tab-pane" id="pane-outlook">
+              <div class="guide-steps">
+                <div class="step">
+                  <div class="step-num">1</div>
+                  <div class="step-desc">
+                    <h4>匯出 ICS 檔案</h4>
+                    <p>點擊本網頁的<strong>「匯出所選課表 (.ics)」</strong>按鈕，將檔案下載至本機電腦。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">2</div>
+                  <div class="step-desc">
+                    <h4>開啟 Outlook 網頁版或軟體</h4>
+                    <p>進入 Outlook，點擊左下角的<strong>「日曆」</strong>圖示切換到行事曆畫面。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">3</div>
+                  <div class="step-desc">
+                    <h4>新增日曆與上傳</h4>
+                    <p>點擊<strong>「新增日曆」</strong> &gt; 選擇<strong>「從檔案上傳」</strong>（Upload from file）。</p>
+                  </div>
+                </div>
+                <div class="step">
+                  <div class="step-num">4</div>
+                  <div class="step-desc">
+                    <h4>選取檔案並匯入</h4>
+                    <p>點擊瀏覽並選取剛剛下載的 <code>.ics</code> 檔案，選擇要匯入的目標日曆，點擊<strong>「匯入」</strong>（Import）完成設定。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer with simulator modal / custom controls -->
+    <footer class="app-footer-bar">
+      <p>© 2026 國立臺灣科技大學 EMBA 115暑期班。專為同學便利設計。</p>
+      <p>今日模擬日期設定：2026/06/18（點擊右上方時鐘按鈕可模擬時間流逝）</p>
+    </footer>
+  </div>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="detailModalOverlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalCourseName">課程名稱</h3>
+        <button class="modal-close" id="btnModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-info-row">
+          <span class="info-label"><i class="fa-regular fa-calendar"></i> 日期</span>
+          <span class="info-value" id="modalDate">115/06/19 (五)</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="info-label"><i class="fa-regular fa-clock"></i> 時間</span>
+          <span class="info-value" id="modalTime">18:25 - 21:05</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="info-label"><i class="fa-solid fa-location-dot"></i> 地點</span>
+          <span class="info-value" id="modalLocation">國際大樓九樓 IB9 個案教室</span>
+        </div>
+        <div class="modal-info-row">
+          <span class="info-label"><i class="fa-solid fa-chalkboard-user"></i> 教授</span>
+          <span class="info-value" id="modalProfessor">郭啟賢 教授</span>
+        </div>
+        
+        <div class="modal-divider"></div>
+        
+        <div class="modal-ta-section">
+          <h4><i class="fa-solid fa-user-tie"></i> 助教聯絡資訊</h4>
+          <p class="ta-detail"><strong id="modalTAName">簡紫婕</strong> (學號: <span id="modalTAId">M11408011</span>)</p>
+          <div class="modal-actions-grid">
+            <a href="tel:0966708093" class="btn btn-phone" id="modalTAPhoneBtn"><i class="fa-solid fa-phone"></i> 撥打電話</a>
+            <a href="mailto:dudududu5033@gmail.com" class="btn btn-email" id="modalTAEmailBtn"><i class="fa-solid fa-envelope"></i> 傳送郵件</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Simulator Modal -->
+  <div class="modal-overlay" id="simModalOverlay">
+    <div class="modal-card modal-small">
+      <div class="modal-header">
+        <h3>時間流逝模擬器</h3>
+        <button class="modal-close" id="btnSimModalClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="sim-desc">您可以自訂「今日」日期，以測試當日期在課程進行中時，系統如何動態顯示「已上堂數」及「剩餘堂數」。</p>
+        <div class="sim-input-group">
+          <label for="simDateInput">模擬今天日期:</label>
+          <input type="date" id="simDateInput" value="2026-06-18">
+        </div>
+        <div class="sim-buttons">
+          <button class="btn btn-secondary" id="btnResetSimDate">重設回今日 (2026/06/18)</button>
+          <button class="btn btn-primary" id="btnApplySimDate">套用日期</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">已複製連結！可在 LINE 中貼上分享。</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
