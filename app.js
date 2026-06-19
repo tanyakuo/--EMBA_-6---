@@ -543,6 +543,8 @@ function renderWeekView() {
     const isToday = dateStr === formatDateString(state.currentDate);
     if (isToday) {
       dayCol.classList.add("today");
+    } else {
+      dayCol.classList.add("is-collapsed");
     }
     
     // Day Header
@@ -582,12 +584,42 @@ function renderWeekView() {
           <span class="week-event-location"><i class="fa-solid fa-location-dot"></i> IB9 個案教室</span>
         `;
         
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent toggling collapse when clicking event details
           openDetailModal(sess, dateStr);
         });
         
         colEvents.appendChild(card);
       });
+      
+      // Generate summary text for mobile collapsed state
+      // Use overall day start and end time (e.g. 09:00 - 16:00)
+      const courseName = daySessions[0].courseName;
+      const startTime = daySessions[0].start;
+      const endTime = daySessions[daySessions.length - 1].end;
+      const colorClass = daySessions[0].colorClass;
+      
+      const mobileSummaryBadge = document.createElement("span");
+      mobileSummaryBadge.classList.add("week-summary-badge-mobile", colorClass);
+      mobileSummaryBadge.innerText = `${courseName} ${startTime} - ${endTime}`;
+      headerDay.appendChild(mobileSummaryBadge);
+      
+      // Add arrow icon for toggling
+      const arrowIcon = document.createElement("i");
+      arrowIcon.className = isToday ? "fa-solid fa-chevron-up toggle-arrow" : "fa-solid fa-chevron-down toggle-arrow";
+      headerDay.appendChild(arrowIcon);
+      
+      // Toggle collapse on header click
+      headerDay.addEventListener("click", () => {
+        const isCollapsedNow = dayCol.classList.toggle("is-collapsed");
+        if (isCollapsedNow) {
+          arrowIcon.className = "fa-solid fa-chevron-down toggle-arrow";
+        } else {
+          arrowIcon.className = "fa-solid fa-chevron-up toggle-arrow";
+        }
+      });
+      
+      headerDay.style.cursor = "pointer";
     } else {
       // Add empty state class for mobile rendering
       dayCol.classList.add("has-no-events");

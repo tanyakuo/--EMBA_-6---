@@ -942,7 +942,7 @@ body {
   font-style: italic;
 }
 
-.week-empty-badge-mobile {
+.week-empty-badge-mobile, .week-summary-badge-mobile, .toggle-arrow {
   display: none;
 }
 
@@ -1474,6 +1474,58 @@ body {
 
   .week-day-column.has-no-events .week-column-events {
     display: none !important;
+  }
+
+  /* Compact collapsed styles for days with classes */
+  .week-day-column.is-collapsed {
+    padding: 10px 14px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.8;
+  }
+
+  .week-day-column.is-collapsed .week-column-events {
+    display: none !important;
+  }
+
+  .week-day-column.is-collapsed .week-header-day {
+    justify-content: space-between !important;
+  }
+
+  .week-summary-badge-mobile {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border-left: 2px solid rgba(0, 0, 0, 0.2);
+    text-align: right;
+  }
+
+  .week-summary-badge-mobile.accounting {
+    background-color: var(--color-acc);
+  }
+
+  .week-summary-badge-mobile.statistics {
+    background-color: var(--color-stat);
+  }
+
+  .week-summary-badge-mobile.economics {
+    background-color: var(--color-econ);
+  }
+
+  .week-day-column:not(.is-collapsed) .week-summary-badge-mobile {
+    display: none !important;
+  }
+
+  .toggle-arrow {
+    display: inline-block !important;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-left: 8px;
+    transition: transform var(--transition-fast);
   }
 
   /* Stats Container Mobile Enhancement */
