@@ -165,31 +165,21 @@ body {
   gap: 16px;
 }
 
-/* Simulation and Indicator styling */
-.sim-indicator {
+/* Date Indicator styling */
+.date-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   background-color: var(--bg-card);
   padding: 8px 14px;
   border-radius: 50px;
   border: 1px solid var(--border-color);
   font-size: 14px;
+  color: var(--text-secondary);
 }
 
-.pulse-dot {
-  width: 8px;
-  height: 8px;
-  background-color: #10b981;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #10b981;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
-  70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+.date-indicator i {
+  color: var(--accent-primary);
 }
 
 .btn-icon-small {
@@ -250,24 +240,7 @@ body {
   gap: 24px;
 }
 
-@media (max-width: 1024px) {
-  .sidebar-section, .main-content-section {
-    display: contents;
-  }
-  
-  .dashboard-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .filter-card { order: 1; }
-  .action-buttons-container { order: 2; }
-  .progress-card { order: 3; }
-  .calendar-card-container { order: 4; }
-  .contacts-card { order: 5; }
-  .guide-card { order: 6; }
-}
+
 
 /* Universal Dashboard Card Style */
 .dashboard-card {
@@ -857,19 +830,26 @@ body {
 
 /* Week Grid Layout */
 .week-grid-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius-md);
   overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.005);
 }
 
-.week-grid-header {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  background-color: var(--bg-input);
-  border-bottom: 1px solid var(--border-color);
-  text-align: center;
+.week-day-column {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-color);
+}
+
+.week-day-column:last-child {
+  border-right: none;
+}
+
+.week-day-column.today {
+  background-color: rgba(99, 102, 241, 0.02);
 }
 
 .week-header-day {
@@ -877,6 +857,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  background-color: var(--bg-input);
+  border-bottom: 1px solid var(--border-color);
+  text-align: center;
 }
 
 .week-header-day .day-num {
@@ -895,15 +878,7 @@ body {
   background-color: var(--today-bg);
 }
 
-.week-grid-body {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  min-height: 250px;
-  background-color: rgba(255, 255, 255, 0.005);
-}
-
-.week-column {
-  border-right: 1px solid var(--border-color);
+.week-column-events {
   padding: 8px 4px;
   display: flex;
   flex-direction: column;
@@ -911,12 +886,8 @@ body {
   min-height: 200px;
 }
 
-.week-column:last-child {
-  border-right: none;
-}
-
-.week-column.today {
-  background-color: rgba(99, 102, 241, 0.02);
+#btnShareLink {
+  margin-top: -12px;
 }
 
 .week-event-card {
@@ -969,6 +940,10 @@ body {
   text-align: center;
   margin-top: 40px;
   font-style: italic;
+}
+
+.week-empty-badge-mobile {
+  display: none;
 }
 
 /* Guide Card / Import Tutorial */
@@ -1316,6 +1291,26 @@ body {
   gap: 6px;
 }
 
+@media (max-width: 1024px) {
+  .sidebar-section, .main-content-section {
+    display: contents;
+  }
+  
+  .dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .calendar-card-container { order: 1; }
+  .filter-card { order: 2; }
+  .progress-card { order: 3; }
+  #btnShareLink { order: 4; margin-top: 0; }
+  .contacts-card { order: 5; }
+  #btnExportICS { order: 6; }
+  .guide-card { order: 7; }
+}
+
 /* RWD Mobile Styles */
 @media (max-width: 768px) {
   .app-container {
@@ -1339,7 +1334,7 @@ body {
     justify-content: space-between;
   }
 
-  .sim-indicator {
+  .date-indicator {
     font-size: 12px;
     padding: 6px 12px;
   }
@@ -1379,46 +1374,126 @@ body {
     display: none; /* Hide time inside pills on mobile to save space */
   }
 
-  /* Week Calendar Mobile Scrollable */
+  /* Week Calendar Mobile Agenda Stack */
   .week-grid-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: visible;
   }
-  
-  .week-grid-header, .week-grid-body {
-    min-width: 600px; /* Force minimum width to allow scrolling instead of squeezing */
+
+  .week-day-column {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-right: 1px solid var(--border-color) !important;
+  }
+
+  .week-day-column.today {
+    border-color: var(--accent-primary) !important;
+    background-color: var(--today-bg);
+  }
+
+  .week-header-day {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    text-align: left !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 8px;
+    width: 100%;
   }
 
   .week-header-day .day-num {
-    font-size: 15px;
+    font-size: 16px;
+    font-weight: 700;
   }
 
   .week-header-day .day-name {
-    font-size: 11px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-right: auto;
+  }
+
+  .week-column-events {
+    padding: 0 !important;
+    min-height: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
 
   .week-event-card {
-    padding: 6px 8px;
+    padding: 10px;
   }
 
   .week-event-title {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .week-event-time, .week-event-location {
-    font-size: 9px;
+    font-size: 11px;
   }
 
+  .week-empty-text {
+    display: none !important;
+  }
+
+  .week-empty-badge-mobile {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+    background-color: rgba(255, 255, 255, 0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+  }
+
+  /* Compact collapsed styles for days with no classes */
+  .week-day-column.has-no-events {
+    padding: 10px 14px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0.6;
+  }
+
+  .week-day-column.has-no-events .week-column-events {
+    display: none !important;
+  }
+
+  /* Stats Container Mobile Enhancement */
   .stats-container {
-    gap: 8px;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stat-box, .stat-boxHighlight {
+    padding: 14px 8px;
   }
 
   .stat-value {
-    font-size: 18px;
+    font-size: 24px;
+    font-weight: 700;
   }
 
   .stat-label {
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: 500;
   }
 
   /* Modal Mobile Sizing */
