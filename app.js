@@ -98,10 +98,9 @@ const COMMON_LOCATION = "管理學院B1 MA010";
 let state = {
   selectedCourses: ["accounting", "statistics", "economics"], // default
   currentView: "month", // "month" or "week"
-  currentDate: new Date(2026, 5, 18, 12, 0, 0), // Today's initial simulated date (June 18, 2026)
+  currentDate: new Date(), // Today's actual date
   calendarDate: new Date(2026, 5, 1, 0, 0, 0), // Month view navigation date (June 2026 default)
   weekStartDate: new Date(2026, 5, 15, 0, 0, 0), // Week view navigation date (June 15, 2026 default)
-  isSimulated: false
 };
 
 // 3. Init Page
@@ -110,7 +109,7 @@ window.addEventListener("DOMContentLoaded", () => {
   initEventListeners();
   updateProgressStats();
   renderCalendar();
-  updateSimulatorDisplay();
+  updateDateDisplay();
 });
 
 // Load settings
@@ -287,47 +286,7 @@ function initEventListeners() {
     }
   });
 
-  // Simulator Events
-  document.getElementById("btnOpenSim").addEventListener("click", () => {
-    const yyyy = state.currentDate.getFullYear();
-    const mm = String(state.currentDate.getMonth() + 1).padStart(2, "0");
-    const dd = String(state.currentDate.getDate()).padStart(2, "0");
-    document.getElementById("simDateInput").value = `${yyyy}-${mm}-${dd}`;
-    document.getElementById("simModalOverlay").classList.add("show");
-  });
-
-  document.getElementById("btnSimModalClose").addEventListener("click", () => {
-    document.getElementById("simModalOverlay").classList.remove("show");
-  });
-
-  document.getElementById("simModalOverlay").addEventListener("click", (e) => {
-    if (e.target === document.getElementById("simModalOverlay")) {
-      document.getElementById("simModalOverlay").classList.remove("show");
-    }
-  });
-
-  document.getElementById("btnResetSimDate").addEventListener("click", () => {
-    state.currentDate = new Date("2026-06-18T12:00:00");
-    state.isSimulated = false;
-    updateSimulatorDisplay();
-    updateProgressStats();
-    renderCalendar();
-    document.getElementById("simModalOverlay").classList.remove("show");
-    showToast("已重置為系統預設時間 (2026/06/18)");
-  });
-
-  document.getElementById("btnApplySimDate").addEventListener("click", () => {
-    const inputVal = document.getElementById("simDateInput").value;
-    if (inputVal) {
-      state.currentDate = new Date(inputVal + "T12:00:00");
-      state.isSimulated = true;
-      updateSimulatorDisplay();
-      updateProgressStats();
-      renderCalendar();
-      document.getElementById("simModalOverlay").classList.remove("show");
-      showToast(`已成功套用模擬日期：${inputVal}`);
-    }
-  });
+  // Simulator Events removed
 
   // Guide Tabs
   document.querySelectorAll(".guide-tab-btn").forEach(btn => {
@@ -411,24 +370,13 @@ function updateProgressStats() {
   document.getElementById("progressBarFill").style.width = `${percent}%`;
 }
 
-function updateSimulatorDisplay() {
+function updateDateDisplay() {
   const textEl = document.getElementById("currentDateText");
-  const footerEl = document.querySelector(".app-footer-bar p:last-child");
-  
   const yyyy = state.currentDate.getFullYear();
   const mm = String(state.currentDate.getMonth() + 1).padStart(2, "0");
   const dd = String(state.currentDate.getDate()).padStart(2, "0");
   const dateStr = `${yyyy}/${mm}/${dd}`;
-  
-  if (state.isSimulated) {
-    textEl.innerText = `模擬時間: ${dateStr}`;
-    textEl.parentElement.style.borderColor = "var(--accent-primary)";
-    footerEl.innerText = `今日模擬日期設定：${dateStr} (已啟用模擬)`;
-  } else {
-    textEl.innerText = `系統日期: ${dateStr}`;
-    textEl.parentElement.style.borderColor = "var(--border-color)";
-    footerEl.innerText = `今日模擬日期設定：${dateStr} (點擊右上方時鐘按鈕可模擬時間流逝)`;
-  }
+  textEl.innerText = `今日日期: ${dateStr}`;
 }
 
 // 6. Navigation
@@ -568,20 +516,15 @@ function createMonthDayCell(date, isCurrentMonth, activeSessions) {
 
 // Render Week
 function renderWeekView() {
-  const headerContainer = document.getElementById("weekGridHeader");
-  const bodyContainer = document.getElementById("weekGridBody");
+  const container = document.getElementById("weekGridDays");
+  container.innerHTML = "";
   
-  headerContainer.innerHTML = "";
-  bodyContainer.innerHTML = "";
-  
-  const weekDays = [];
   const start = new Date(state.weekStartDate);
   
   // Set Calendar Header Title (Show range of the week)
   const weekEnd = new Date(start);
   weekEnd.setDate(weekEnd.getDate() + 6);
   
-  const formatRangeText = (d) => `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
   document.getElementById("calendarTitle").innerText = `${String(start.getMonth()+1)}月 ${start.getDate()}日 - ${String(weekEnd.getMonth()+1)}月 ${weekEnd.getDate()}日`;
   
   const activeSessions = getActiveSessions();
@@ -593,11 +536,20 @@ function renderWeekView() {
     current.setDate(start.getDate() + i);
     const dateStr = formatDateString(current);
     
-    // Header
-    const headerDay = document.createElement("div");
-    headerDay.classList.add("week-header-day");
+    // Day Column Container
+    const dayCol = document.createElement("div");
+    dayCol.classList.add("week-day-column");
     
     const isToday = dateStr === formatDateString(state.currentDate);
+    if (isToday) {
+      dayCol.classList.add("today");
+    } else {
+      dayCol.classList.add("is-collapsed");
+    }
+    
+    // Day Header
+    const headerDay = document.createElement("div");
+    headerDay.classList.add("week-header-day");
     if (isToday) {
       headerDay.classList.add("today");
     }
@@ -606,12 +558,11 @@ function renderWeekView() {
       <span class="day-num">${current.getDate()}</span>
       <span class="day-name">週${weekdayNames[i]}</span>
     `;
-    headerContainer.appendChild(headerDay);
+    dayCol.appendChild(headerDay);
     
-    // Column Body
-    const col = document.createElement("div");
-    col.classList.add("week-column");
-    if (isToday) col.classList.add("today");
+    // Events List Container
+    const colEvents = document.createElement("div");
+    colEvents.classList.add("week-column-events");
     
     // Day sessions
     const daySessions = activeSessions.filter(sess => sess.date === dateStr);
@@ -633,20 +584,61 @@ function renderWeekView() {
           <span class="week-event-location"><i class="fa-solid fa-location-dot"></i> 管理學院B1 MA010</span>
         `;
         
-        card.addEventListener("click", () => {
+        card.addEventListener("click", (e) => {
+          e.stopPropagation(); // Prevent toggling collapse when clicking event details
           openDetailModal(sess, dateStr);
         });
         
-        col.appendChild(card);
+        colEvents.appendChild(card);
       });
+      
+      // Generate summary text for mobile collapsed state
+      // Use overall day start and end time (e.g. 09:00 - 16:00)
+      const courseName = daySessions[0].courseName;
+      const startTime = daySessions[0].start;
+      const endTime = daySessions[daySessions.length - 1].end;
+      const colorClass = daySessions[0].colorClass;
+      
+      const mobileSummaryBadge = document.createElement("span");
+      mobileSummaryBadge.classList.add("week-summary-badge-mobile", colorClass);
+      mobileSummaryBadge.innerText = `${courseName} ${startTime} - ${endTime}`;
+      headerDay.appendChild(mobileSummaryBadge);
+      
+      // Add arrow icon for toggling
+      const arrowIcon = document.createElement("i");
+      arrowIcon.className = isToday ? "fa-solid fa-chevron-up toggle-arrow" : "fa-solid fa-chevron-down toggle-arrow";
+      headerDay.appendChild(arrowIcon);
+      
+      // Toggle collapse on header click
+      headerDay.addEventListener("click", () => {
+        const isCollapsedNow = dayCol.classList.toggle("is-collapsed");
+        if (isCollapsedNow) {
+          arrowIcon.className = "fa-solid fa-chevron-down toggle-arrow";
+        } else {
+          arrowIcon.className = "fa-solid fa-chevron-up toggle-arrow";
+        }
+      });
+      
+      headerDay.style.cursor = "pointer";
     } else {
+      // Add empty state class for mobile rendering
+      dayCol.classList.add("has-no-events");
+      
+      // Desktop empty state text
       const emptyText = document.createElement("span");
       emptyText.classList.add("week-empty-text");
       emptyText.innerText = "無課程";
-      col.appendChild(emptyText);
+      colEvents.appendChild(emptyText);
+      
+      // Mobile empty state badge inside header
+      const mobileEmptyBadge = document.createElement("span");
+      mobileEmptyBadge.classList.add("week-empty-badge-mobile");
+      mobileEmptyBadge.innerText = "無課程";
+      headerDay.appendChild(mobileEmptyBadge);
     }
     
-    bodyContainer.appendChild(col);
+    dayCol.appendChild(colEvents);
+    container.appendChild(dayCol);
   }
 }
 
