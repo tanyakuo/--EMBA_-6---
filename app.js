@@ -92,7 +92,7 @@ const COURSE_DATA = {
   }
 };
 
-const COMMON_LOCATION = "國際大樓九樓 IB9 個案教室";
+const COMMON_LOCATION = "管理學院B1 MA010";
 
 // 2. Application State
 let state = {
@@ -630,7 +630,7 @@ function renderWeekView() {
         card.innerHTML = `
           <span class="week-event-time"><i class="fa-regular fa-clock"></i> ${sess.start} - ${sess.end}</span>
           <span class="week-event-title">${sess.courseName}</span>
-          <span class="week-event-location"><i class="fa-solid fa-location-dot"></i> IB9 個案教室</span>
+          <span class="week-event-location"><i class="fa-solid fa-location-dot"></i> 管理學院B1 MA010</span>
         `;
         
         card.addEventListener("click", () => {
